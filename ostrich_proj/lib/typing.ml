@@ -37,7 +37,7 @@ let rec unify t t' = (* Não precisa de ser unificação *)
 
 
 
-let rec apply unification t = t (* TODO: Just in case we need to apply substitutions *)
+let (*rec*) apply unification t = t (* TODO: Just in case we need to apply substitutions *)
 
 
 

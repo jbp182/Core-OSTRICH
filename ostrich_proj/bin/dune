@@ -1,0 +1,4 @@
+(executable
+ (public_name ostrich_proj)
+ (name main)
+ (libraries ostrich))

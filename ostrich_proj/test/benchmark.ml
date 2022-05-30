@@ -1,8 +1,9 @@
-open Syntax
-open Utils
-open Eval 
-open Typing 
-open PrettyPrint
+open Ostrich
+open Ostrich.Syntax
+open Ostrich.Utils
+open Ostrich.Eval 
+open Ostrich.Typing 
+open Ostrich.PrettyPrint
 
 
 

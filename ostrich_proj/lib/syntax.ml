@@ -21,7 +21,6 @@ type node_ty =
     | Chart
     | Counter
     | Pagination
-    | Filter
 
 type label = string
 

@@ -67,7 +67,7 @@ let templ_inst =
                             CallType( CallName(Var "f", NameT "Store") , VarT "X" ) 
                             ,
                             RecordT [
-                                    ("IsInStock", AttributeT(NameT "Store", StringT)) ;
+                                    ("IsInStock", AttributeT(NameT "Store", BoolT)) ;
                                     ("Random", AttributeT(NameT "Store", NumT))
                                     ] 
                         ) 

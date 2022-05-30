@@ -14,6 +14,14 @@ type node_ty =
     | Input
     | CheckBox
     | Calendar
+    | Container
+    | List
+    | ListItem
+    | Search
+    | Chart
+    | Counter
+    | Pagination
+    | Filter
 
 type label = string
 
@@ -21,6 +29,7 @@ type label = string
 type ty = 
     | NumT
     | StringT
+    (* | BoolC of bool option *)
     | BoolT
     | LabelT of label
     | LabelAttrT of ty * ty

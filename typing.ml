@@ -71,6 +71,7 @@ let rec subst_name o n t =
         RecordAttrT(subst_name o n n')
     | LabelAttrT(n', t') ->
         LabelAttrT(subst_name o n n', t')
+    | ListAttrT(n') -> ListAttrT(subst_name o n n')
     | _ -> t
 
 
@@ -271,20 +272,25 @@ and typecheck e env mod_env tenv nenv renv =
         (AIsOfType((ae,te), t), BoolT)
         (* begin 
         match te with
-        | AttributeT(n, t') -> AIsOfType(e', t, BoolT)
-        | _ -> AIsOfType(e', t, BoolT)
+        | AttributeT(n, VarT t') -> (AIsOfType((ae,te), t), BoolC(None))
+        | AttributeT(n, t') -> (AIsOfType((ae,te), t), BoolC(Some (t'=t)))
+        | _ -> error (AttributeExpected te)
+        (* | _ -> (AIsOfType((ae,te), t), BoolT) *)
         end *)
     
     | IfNode(c, t, f) -> 
         let (ac,tc) = typecheck c env mod_env tenv nenv renv in
         begin
         match tc with
-        | BoolT -> 
+        | BoolT ->
             let (at,tt) = typecheck t env mod_env tenv nenv renv in
             let (af,tf) = typecheck f env mod_env tenv nenv renv in
             begin
             match tt, tf with
             | NodeT (t1, RecordT pr1), NodeT (t2, RecordT pr2) -> (AIfNode((ac,tc), (at,tt), (af,tf)), NodeT (append t1 t2, RecordT (append pr1 pr2)))
+            | BoxT (NodeT (t1, RecordT pr1)), NodeT (t2, RecordT pr2) -> (AIfNode((ac,tc), (at,tt), (af,tf)), BoxT (NodeT (append t1 t2, RecordT (append pr1 pr2))))
+            | NodeT (t1, RecordT pr1), BoxT (NodeT (t2, RecordT pr2)) -> (AIfNode((ac,tc), (at,tt), (af,tf)), BoxT (NodeT (append t1 t2, RecordT (append pr1 pr2))))
+            | BoxT (NodeT (t1, RecordT pr1)), BoxT (NodeT (t2, RecordT pr2)) -> (AIfNode((ac,tc), (at,tt), (af,tf)), BoxT (NodeT (append t1 t2, RecordT (append pr1 pr2))))
             | NodeT(t1, RecordT pr1), _ -> error (NodeExpected tf)
             | _, _ -> error (NodeExpected tt)
             end
@@ -356,6 +362,7 @@ and typecheck e env mod_env tenv nenv renv =
             let (a2,t2) = typecheck e2 env' mod_env tenv' env renv in
             begin
             match t2 with
+            | BoxT (NodeT (a, pr)) -> (AForNode(s, t, (a1,t1), [(a2,t2)]), ListT [BoxT(NodeT(a, pr))])
             | NodeT (a, pr) -> (AForNode(s, t, (a1,t1), [(a2,t2)]), ListT [NodeT(a, pr)])
             | _ -> error (NodeExpected t2)
             end

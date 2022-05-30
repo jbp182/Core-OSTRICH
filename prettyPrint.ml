@@ -16,12 +16,20 @@ let string_of_nodetype t =
     | Input -> "Input"
     | CheckBox -> "CheckBox"
     | Calendar -> "Calendar"
+    | Container -> "Container"
+    | List -> "List"
+    | ListItem -> "ListItem"
+    | Search -> "Search"
+    | Chart -> "Chart"
+    | Counter -> "Counter"
+    | Pagination -> "Pagination"
 
 
 let rec string_of_type t =
     match t with
     | NumT -> "Num"
     | StringT -> "String"
+    (* | BoolC b -> "BoolC(" ^ (if b=None then "?" else string_of_bool (Option.get b) ) ^ ")" *)
     | BoolT -> "Bool"
     | LabelT label -> "Label("^label^")"
     | LabelAttrT (t,t') -> "{"^(string_of_type t)^":"^(string_of_type t')^"}"
@@ -99,7 +107,7 @@ and string_of_term_lvl t lvl =
     | String s -> "'"^s^"'"
     | Bool b -> string_of_bool b
 
-    | Var x -> x
+    | Var x -> "Var("^x^")"
     | Label l -> l
 
     | Entity(s,l,v) -> "Entity<"^s^", {"^string_of_term_lvl l lvl^"}, {"^string_of_term_lvl v lvl^"}>"
@@ -117,7 +125,8 @@ and string_of_term_lvl t lvl =
     | NameOf e -> "(NameOf "^string_of_term_lvl e lvl^")"
     | LabelOf a -> "(LabelOf "^string_of_term_lvl a lvl^")"
     
-    | Closure(e,env) -> "Closure(\n"^string_tabs lvl^string_of_term_lvl e (lvl+1)^" ,\n"^string_tabs (lvl-1)^"["^string_of_record env (lvl-1)^"\n"^string_tabs (lvl-1)^"])"
+    | Closure(e,env) -> "Closure(\n"^string_tabs lvl^string_of_term_lvl e (lvl+1)^")"
+     (* " ,\n"^string_tabs (lvl-1)^"["^string_of_record env (lvl-1)^"\n"^string_tabs (lvl-1)^"])" *)
     | Box e -> "Box("^string_of_term_lvl e lvl^")"
     | LetBox(u,e1,e2) -> "letbox "^u^"*="^string_of_term_lvl e1 lvl^" in\n"^ string_tabs lvl ^string_of_term_lvl e2 (lvl+1)
     | VarRT u -> u^"*"
